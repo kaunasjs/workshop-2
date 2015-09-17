@@ -49,24 +49,64 @@ index.ng.html
 <p>1 + 2 = {{ 1 + 2 }}</p>
 ```
 
-### Tictactoe and angular basics
+### Tictactoe and angular basics 
+(much codding happens here)
   - two-way binding
   - ng repeat
   - ng click 
   - ng show
   - private/public functions in controller
 
+###Deploying app
+on web
+```ssh
+meteor deploy my_app_name.meteor.com
+```
+
+on mobile
+Angular needs the main document to be ready so it can bootstrap, but different devices have different events for ready.
+
+To solve this, we need to change the way we bootstrap our Angular app. Remove the current bootstrap by removing ng-app from the <body> tag:
+```js
+function onReady() {
+    angular.bootstrap(document, ['simple-todos']);
+  }
+ 
+  if (Meteor.isCordova)
+    angular.element(document).on('deviceready', onReady);
+  else
+    angular.element(document).ready(onReady);
+```
+
+Android Emulator
+ - meteor install-sdk android
+ - meteor add-platform android
+ - meteor run android
+
+Android device
+ - Enable usb debugging on android device
+ - Turn off android emulator
+ - meteor run android-device
+ - meteor run android-device --mobile-server my_app_name.meteor.com
+
+IOS device
+  - Get apple developer account
+  - meteor run ios-device
+  - meteor run ios-device --mobile-server my_app_name.meteor.com
+  - 
+  
+
+**(Coffee break)**
+=======
+
+
 ### Meteor basics
-  - Client, Server, Cordova file
+  - Meteor collection
   - Meteor collection in angular
   - Connecting to mongo (just demonstration)
 
 ### Angular advanced
   - Routing ? (only simple 3 ruotes)
-  
-###Deploying app
-on web
-on mobile  
 
 ### Adding user and security (some native blaziness :) ) 
 meteor remove insecure 
