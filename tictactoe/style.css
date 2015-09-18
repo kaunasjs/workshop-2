@@ -1,0 +1,38 @@
+.title{
+    float: right;
+    cursor: pointer;
+    background-color: #888585;;
+    width: 30%;
+    height: 11vmin;;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    vertical-align: middle;
+    text-align: center;
+    color: white;
+    font-size: 11vmin;
+    line-height: 11vmin;
+    font-weight: bold;
+}
+
+.title:hover{
+    background-color: #BBBBBB
+}
+
+body{
+    background-color: #F1F1F1;
+}
+
+.wrapper {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+}
+
+.restartBtn{
+    position: absolute;
+    top: 75%;
+    width: 10%;
+    right: 42%;
+}
