@@ -39,7 +39,7 @@ index.html
 app.js
 
 if (Meteor.isClient) {
-  angular.module('socially',['angular-meteor']);
+  angular.module('tictactoe',['angular-meteor']);
 }
 ```
 
