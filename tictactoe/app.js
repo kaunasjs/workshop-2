@@ -1,8 +1,45 @@
 if (Meteor.isClient) {
-  angular.module('tictactoe',['angular-meteor']);
+  angular.module('tictactoe',['angular-meteor', 'ui.router']);
 
-  angular.module('tictactoe').controller('tictactoeCtrl', ['$scope',
+  angular.module('tictactoe').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
+    function($urlRouterProvider, $stateProvider, $locationProvider){
+
+      $locationProvider.html5Mode(true);
+
+      $stateProvider
+          .state('main', {
+            url: '/main',
+            templateUrl: 'index.ng.html',
+            controller: 'mainCtrl'
+          })
+          .state('game-list', {
+            url: '/game-list/',
+            templateUrl: 'party-details.ng.html',
+            controller: 'gameListCtrl'
+          })
+          .state('game', {
+            url: '/game/:gameId',
+            templateUrl: 'game.ng.html',
+            controller: 'tictactoeCtrl'
+          });
+
+      $urlRouterProvider.otherwise("/main");
+    }]);
+
+  angular.module('tictactoe').controller('gameListCtrl', ['$scope',
     function ($scope) {
+
+    }]);
+
+  angular.module('tictactoe').controller('mainCtrl', ['$scope',
+    function ($scope) {
+
+    }]);
+
+  angular.module('tictactoe').controller('tictactoeCtrl', ['$scope', '$stateParams',
+    function ($scope, $stateParams) {
+
+      $scope.gameId = $stateParams.gameId;
 
       $scope.endMessage = false;
       $scope.fields = [];
