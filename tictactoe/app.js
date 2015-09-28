@@ -1,9 +1,30 @@
 Games = new Mongo.Collection("games");
 
-
+Games.allow({
+  insert: function (userId, game) {
+    return userId && game.owner === userId;
+  },
+  update: function (userId, game) {
+    return userId && game.owner === userId;
+  },
+  remove: function (userId, game) {
+    return userId && game.owner === userId;
+  }
+});
 
 if (Meteor.isClient) {
   angular.module('tictactoe',['angular-meteor', 'ui.router']);
+
+  angular.module("tictactoe").run(['$rootScope', '$state', function($rootScope, $state) {
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+      // We can catch the error thrown when the $requireUser promise is rejected
+      // and redirect the user back to the main page
+      if (error === 'AUTH_REQUIRED') {
+        $state.go('main');
+      }
+    });
+  }]);
+
 
   angular.module('tictactoe').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
     function($urlRouterProvider, $stateProvider, $locationProvider){
@@ -19,12 +40,22 @@ if (Meteor.isClient) {
           .state('game-list', {
             url: '/game-list/',
             templateUrl: 'party-details.ng.html',
-            controller: 'gameListCtrl'
+            controller: 'gameListCtrl',
+            resolve: {
+              "currentUser": ["$meteor", function($meteor){
+                return $meteor.requireUser();
+              }]
+            }
           })
           .state('game', {
             url: '/game/:gameId',
             templateUrl: 'game.ng.html',
-            controller: 'tictactoeCtrl'
+            controller: 'tictactoeCtrl',
+            resolve: {
+              "currentUser": ["$meteor", function($meteor){
+                return $meteor.requireUser();
+              }]
+            }
           });
 
       $urlRouterProvider.otherwise("/main");
@@ -40,8 +71,8 @@ if (Meteor.isClient) {
 
     }]);
 
-  angular.module('tictactoe').controller('tictactoeCtrl', ['$scope', '$stateParams', '$meteor',
-    function ($scope, $stateParams, $meteor) {
+  angular.module('tictactoe').controller('tictactoeCtrl', ['$scope', '$stateParams', '$meteor', '$rootScope',
+    function ($scope, $stateParams, $meteor, $rootScope) {
 
       $scope.games = $meteor.collection(Games);
 
@@ -51,6 +82,7 @@ if (Meteor.isClient) {
         this.endMessage = false;
         this.fields = [];
         this.currentPlayer = "X";
+        this.owner = $rootScope.currentUser._id;
       };
 
       Game.prototype.init = function(){
