@@ -8,14 +8,31 @@ if (Meteor.isClient) {
       $scope.fields = [];
       $scope.currentPlayer = "X";
 
-      $scope.init = function(){
-        for(var i = 0; i < 9; i++){
-          $scope.fields[i] = {"player":" "};
+      $scope.size = 7;
+      
+      $scope.lineSize = 5;
+      
+
+      $scope.init = function(size, lineSize){
+
+        $scope.size = size;
+      
+        $scope.lineSize = lineSize;
+
+        var cellSize = 100 / ($scope.size + 1);
+
+        $scope.gridSize = $scope.size * $scope.size;
+        $scope.gridStyle={"width": cellSize + "%", "height": cellSize + "%"};    
+
+        console.log('restart, ', $scope.gridStyle , ' $scope.size: ', $scope.size , ' $scope.lineSize ' , $scope.lineSize);
+
+        for(var i = 0; i < $scope.gridSize; i++){
+          $scope.fields[i] = {"player": ' '};
         }
         $scope.endMessage = false;
       };
 
-      $scope.init();
+      //$scope.init();
 
       $scope.occupieField = function(field){
         if(field.player !== ' ') return true;
@@ -36,15 +53,68 @@ if (Meteor.isClient) {
         $scope.endMessage = 'Congratulations winner is player ' + $scope.currentPlayer + '.';
       };
 
+      var _checkHorizontal = function _checkHorizontal(start, length){
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if((start + 1) % $scope.size === 0) return
+        else if($scope.fields[start].player === $scope.fields[start+1].player
+          && $scope.fields[start].player !== ' ') {
+          _checkHorizontal(start + 1, length + 1);
+        }
+        else return
+      }
+
+      var _checkVertical = function _checkVertical(start, length){
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if($scope.fields[start].player === $scope.fields[start+$scope.size].player
+          && $scope.fields[start].player !== ' ') {
+          _checkVertical(start + $scope.size, length + 1);
+        }
+        else return
+      }
+
+      var _checkDiagonal = function _checkDiagonal(start, length){
+        var diagonal = start+$scope.size+1;
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if((start + 1) % $scope.size === 0) return
+        else if($scope.fields[start].player === $scope.fields[diagonal].player
+          && $scope.fields[start].player !== ' ') {
+          _checkDiagonal(diagonal, length + 1);
+        }
+        else return
+      }
+
+      var _checkReverseDiagonal = function _checkReverseDiagonal(start, length){
+        var diagonal = start+$scope.size-1;
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if((start + 1) % $scope.size === 1) return
+        else if($scope.fields[start].player === $scope.fields[diagonal].player
+          && $scope.fields[start].player !== ' ') {
+          _checkReverseDiagonal(diagonal, length + 1);
+        }
+        else return
+      }
+
       var _checkIfWinnerExist = function _checkIfWinnerExist(){
-        for (var i =0; i <3; i++){
-          if( $scope.fields[0+i*3].player == $scope.fields[1+i*3].player && $scope.fields[1+i*3].player == $scope.fields[2+i*3].player && $scope.fields[0+i*3].player != " " ) _printWinner();
-          if( $scope.fields[0+i].player == $scope.fields[3+i].player && $scope.fields[3+i].player ==  $scope.fields[6+i].player && $scope.fields[0+i].player!= " ") _printWinner();
+        for (var i = 0; i < $scope.gridSize; i++) {
+          _checkHorizontal(i, 1);
         }
 
-        if($scope.fields[0].player == $scope.fields[4].player && $scope.fields[4].player  ==  $scope.fields[8].player && $scope.fields[4].player!= " ") _printWinner();
-        if($scope.fields[2].player == $scope.fields[4].player && $scope.fields[4].player  ==  $scope.fields[6].player && $scope.fields[4].player!= " ") _printWinner();
-        };
+        var verticalSize = ($scope.size - $scope.lineSize + 1) * $scope.size;
+
+        for (var i = 0; i < verticalSize; i++) {
+          _checkVertical(i, 1);
+          _checkDiagonal(i, 1);
+          _checkReverseDiagonal(i, 1);
+        }
+      }
 
     }]);
 }

@@ -1,5 +1,5 @@
 <div class="wrapper" ng-show="!endMessage">
-    <div ng-repeat="field in fields track by $index" class="title" ng-click="occupieField(field)">
+    <div ng-repeat="field in fields track by $index" class="title" ng-click="occupieField(field)" ng-style="gridStyle">
         {{field.player}}
     </div>
 </div>
@@ -8,4 +8,6 @@
     <h1>{{endMessage}}</h1>
 </div>
 
-<button class="restartBtn" ng-click="init()"> Restart </button>
+<button class="restartBtn" ng-click="init(size, lineSize)"> Restart </button>
+<input ng-model="size" type="number"/> <span>{{size}}</span>
+<input ng-model="lineSize" type="number"/>
