@@ -1,13 +1,14 @@
 Current game id is {{gameId}}
 
-<div class="wrapper" ng-show="!endMessage">
-    <div ng-repeat="field in fields track by $index" class="title" ng-click="occupieField(field)">
+<div class="wrapper" ng-show="!game.endMessage">
+    <div ng-repeat="field in game.fields track by $index" class="title" ng-click="occupieField(field)">
         {{field.player}}
     </div>
 </div>
 
-<div class="wrapper" ng-show="endMessage">
-    <h1>{{endMessage}}</h1>
+<div class="wrapper" ng-show="game.endMessage">
+    <h1>{{game.endMessage}}</h1>
 </div>
 
-<button class="restartBtn" ng-click="init()"> Restart </button>
+<button class="restartBtn" ng-click="game.init()"> Restart </button>
+<button class="restartBtn" ng-click="init()"> Continue Game </button>
