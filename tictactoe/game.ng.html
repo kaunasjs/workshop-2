@@ -1,12 +1,11 @@
-Current game id is {{gameId}}
-
+<span>Current game id is: {{gameId}}</span>
 <div class="wrapper" ng-show="!game.endMessage">
     <div ng-repeat="field in game.fields track by $index" class="title" ng-click="occupieField(field)" ng-style="gridStyle">
         {{field.player}}
     </div>
 </div>
 
-<div class="wrapper" ng-show="game.endMessage">
+<div class="endGame" ng-show="game.endMessage">
     <h1>{{game.endMessage}}</h1>
 </div>
 
@@ -16,8 +15,10 @@ Current game id is {{gameId}}
     </div>
 </div>
 
-<div>Border length: <input ng-model="size" type="number"/></div>
-<div>Line length: <input ng-model="lineSize" type="number"/></div>
-<button class="startBtn" ng-click="init(size, lineSize)"> Start </button>
-<!--<button class="restartBtn" ng-click="restart()"> Restart </button>-->
+<div ng-if="!started" class="settings">
+	<div>Border length: <input ng-model="size" type="number"/></div>
+	<div>Line length: <input ng-model="lineSize" type="number"/></div>
+	<button class="startBtn" ng-click="init(size, lineSize, true)"> Start </button>
+</div>
+<button ng-if="game.endMessage" class="restartBtn" ng-click="restart()"> Restart </button>
 

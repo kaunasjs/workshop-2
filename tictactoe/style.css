@@ -8,9 +8,10 @@
     vertical-align: middle;
     text-align: center;
     color: white;
-    font-size: 11vmin;
-    line-height: 11vmin;
+    font-size: 8vmin;
+    line-height: 8vmin;
     font-weight: bold;
+    box-sizing: content-box;
 }
 
 .title:hover{
@@ -19,6 +20,8 @@
 
 body{
     background-color: #F1F1F1;
+    min-width: 800px;
+    min-height: 600px;
 }
 
 .wrapper {
@@ -29,11 +32,9 @@ body{
     left: 10%;
 }
 
-.restartBtn{
-    position: absolute;
-    top: 90%;
-    width: 10%;
-    right: 42%;
+.endGame {
+    text-align: center;
+    position: relative;
 }
 
 .startScreen{
@@ -42,4 +43,29 @@ body{
     top: 40%;
     left: 0;
     right: 0;
+}
+
+.settings{
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    right: 45%;
+}
+
+.restartBtn{
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    right: 45%;
+    height: 40px;
+    width: 174px;
+    font-size: 25px;
+}
+
+.startBtn{
+    position: relative;
+    top: 10px;
+    height: 40px;
+    width: 174px;
+    font-size: 25px;
 }

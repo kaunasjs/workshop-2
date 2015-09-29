@@ -57,6 +57,7 @@ if (Meteor.isClient) {
     function ($scope, $stateParams, $meteor, $rootScope) {
 
       $scope.games = $meteor.collection(Games);
+      $scope.started = false;
 
       function Game(size, winRow){
         this.size = size;
@@ -77,8 +78,18 @@ if (Meteor.isClient) {
         $scope.init();
       };
 
-      $scope.init = function(size, lineSize){
+      $scope.restart = function(){
+        $scope.started = false;
+        $scope.game.endMessage = '';
+        $scope.game = null;
+        $scope.fields = [];
+        $scope.games[$scope.currentGameNumber] = $scope.game;
+      };
+
+      $scope.init = function(size, lineSize, newGame){
+        $scope.started = true;
         if($stateParams.gameId > -1 && $scope.games[$stateParams.gameId]){
+          $scope.gameId = $stateParams.gameId;
           $scope.game = $scope.games[$stateParams.gameId];
           $scope.currentGameNumber = $stateParams.gameId;
           $scope.size = $scope.game.size;
@@ -87,7 +98,7 @@ if (Meteor.isClient) {
             $scope.game.concurent = $rootScope.currentUser._id;
             $scope.games[$scope.currentGameNumber] = $scope.game;
           }
-        }else{
+        }else if(newGame){
           $scope.size = size;
           $scope.lineSize = lineSize;
           $scope.game =  new Game(size,lineSize);
@@ -106,7 +117,7 @@ if (Meteor.isClient) {
         _checkIfWinnerExist();
 
         $scope.game.currentPlayer = ("X" == $scope.game.currentPlayer) ? "O" : "X";
-        if(_countEmptyPlace() === 0) $scope.game.endMessage = 'There is no winners its a draw.';
+        if(_countEmptyPlace() === 0) $scope.game.endMessage = 'There is no winners its a draw';
         $scope.games[$scope.currentGameNumber] = $scope.game;
       };
 
@@ -117,7 +128,7 @@ if (Meteor.isClient) {
       };
 
       var _printWinner = function(){
-        $scope.game.endMessage = 'Congratulations winner is player ' + $scope.game.currentPlayer + '.';
+        $scope.game.endMessage = 'Congratulations winner is player ' + $scope.game.currentPlayer;
       };
 
       var _checkHorizontal = function _checkHorizontal(start, length){
