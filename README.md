@@ -99,24 +99,90 @@ IOS device
 **(Coffee break)**
 =======
 
+Add ruoter package via meteor pm.
+
+```sh
+meteor add angularui:angular-ui-router
+```
+
+### Angular ruoting
+
+Add base tag to index html (required by html5, and ui ruoter)
+
+```html
+<head>
+  <base href="/">
+</head>
+```
+
+```js
+angular.module('tictactoe').config(['$urlRouterProvider', '$stateProvider', '$locationProvider',
+    function($urlRouterProvider, $stateProvider, $locationProvider){
+
+      $locationProvider.html5Mode(true);
+
+      $stateProvider
+          .state('main', {
+            url: '/main',
+            templateUrl: 'index.ng.html',
+            controller: 'mainCtrl'
+          })
+          .state('game-list', {
+            url: '/game-list/',
+            templateUrl: 'party-details.ng.html',
+            controller: 'gameListCtrl'
+          })
+          .state('game', {
+            url: '/game/:gameId',
+            templateUrl: 'game.ng.html',
+            controller: 'tictactoeCtrl'
+          });
+
+      $urlRouterProvider.otherwise("/main");
+    }]);
+```
+
+Create needed controllers and template file.
+Test state params.  
 
 ### Meteor basics
   - Meteor collection
-  - Meteor collection in angular
+in order to add meteor collection add following lanes
+```js
+
+Games = new Mongo.Collection("games");
+
+
+angular.module('tictactoe').controller('tictactoeCtrl', ['$scope', '$stateParams', '$meteor',
+    function ($scope, $stateParams, $meteor) {
+    
+    //random place from code
+    $scope.games = $meteor.collection(Games);
+    
+    //random place from code
+    $scope.games.save($scope.game);
+```
   - Connecting to mongo (just demonstration)
 
-### Angular advanced
-  - Routing ? (only simple 3 ruotes)
+### Adding user and security (some native blaziness :) )   
 
-### Adding user and security (some native blaziness :) ) 
-meteor remove insecure 
-meteor add accounts-password 
-meteor add accounts-ui 
-meteor add urigo:angular-blaze-template 
-meteor add accounts-facebook
-meteor add accounts-twitter
+```sh
+meteor remove insecure   
+meteor add accounts-password
+meteor add accounts-ui
+meteor add urigo:angular-blaze-template
+meteor add accounts-*
+```  
+where * can be:  
+  - Facebook
+  - Github
+  - Google
+  - Meetup
+  - Twitter
+  - Weibo
+  - Meteor developer account
 
-authorization on ruotes  
+
   
 ### Creating simple 2 players tictactoe
   
