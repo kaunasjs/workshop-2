@@ -1,3 +1,4 @@
 <body ng-app="tictactoe" ng-controller="tictactoeCtrl">
-  <div ng-include="'index.ng.html'"></div>
+	<div ng-model="start" ng-if="!start" ng-include="'start.ng.html'"></div>
+	<div ng-model="start" ng-if="start" ng-include="'index.ng.html'"></div>
 </body>

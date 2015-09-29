@@ -7,19 +7,21 @@ if (Meteor.isClient) {
       $scope.endMessage = false;
       $scope.fields = [];
       $scope.currentPlayer = "X";
-
+      $scope.start = false;
       $scope.size = 7;
-      
       $scope.lineSize = 5;
       
+      $scope.restart = function(){
+        $scope.start = false;
+      };
 
       $scope.init = function(size, lineSize){
-
+        $scope.start = true;
         $scope.size = size;
-      
         $scope.lineSize = lineSize;
-
         var cellSize = 100 / ($scope.size + 1);
+
+        $scope.fields.length = 0;
 
         $scope.gridSize = $scope.size * $scope.size;
         $scope.gridStyle={"width": cellSize + "%", "height": cellSize + "%"};    
@@ -31,8 +33,6 @@ if (Meteor.isClient) {
         }
         $scope.endMessage = false;
       };
-
-      //$scope.init();
 
       $scope.occupieField = function(field){
         if(field.player !== ' ') return true;
