@@ -1,1 +1,11 @@
-Hello this is demo page
+<div ng-if="!$root.currentUser._id">
+    In order to play you need to login
+</div>
+
+<div ng-if="$root.currentUser._id">
+    <div ng-repeat="game in gameList">
+        {{game}}
+    </div>
+
+    <a href ui-sref="game({gameId: gameList.length})"> Create new game </a>
+</div>
