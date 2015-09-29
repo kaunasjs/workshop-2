@@ -73,21 +73,31 @@ if (Meteor.isClient) {
         }
       };
 
-      $scope.init = function(){
+      if($stateParams.gameId && $scope.games[$stateParams.gameId]){
+        $scope.init();
+      };
 
-       if($stateParams.gameId > -1 && $scope.games[$stateParams.gameId]){
+      $scope.init = function(size, lineSize){
+        if($stateParams.gameId > -1 && $scope.games[$stateParams.gameId]){
           $scope.game = $scope.games[$stateParams.gameId];
           $scope.currentGameNumber = $stateParams.gameId;
+          $scope.size = $scope.game.size;
+          $scope.lineSize = $scope.game.winRow;
           if($rootScope.currentUser._id != $scope.game.owner && !$scope.game.concurent){
             $scope.game.concurent = $rootScope.currentUser._id;
             $scope.games[$scope.currentGameNumber] = $scope.game;
           }
         }else{
-          $scope.game =  new Game(3,3);
+          $scope.size = size;
+          $scope.lineSize = lineSize;
+          $scope.game =  new Game(size,lineSize);
           $scope.game.init();
           $scope.currentGameNumber = $scope.games.length;
           $scope.games.save($scope.game);
         }
+        var cellSize = 100 / ($scope.size + 1);
+        $scope.gridSize = $scope.size * $scope.size;
+        $scope.gridStyle={"width": cellSize + "%", "height": cellSize + "%"};
       };
 
       $scope.occupieField = function(field){
@@ -110,14 +120,69 @@ if (Meteor.isClient) {
         $scope.game.endMessage = 'Congratulations winner is player ' + $scope.game.currentPlayer + '.';
       };
 
-      var _checkIfWinnerExist = function _checkIfWinnerExist(){
-        for (var i =0; i <3; i++){
-          if( $scope.game.fields[0+i*3].player == $scope.game.fields[1+i*3].player && $scope.game.fields[1+i*3].player == $scope.game.fields[2+i*3].player && $scope.game.fields[0+i*3].player != " " ) _printWinner();
-          if( $scope.game.fields[0+i].player == $scope.game.fields[3+i].player && $scope.game.fields[3+i].player ==  $scope.game.fields[6+i].player && $scope.game.fields[0+i].player!= " ") _printWinner();
+      var _checkHorizontal = function _checkHorizontal(start, length){
+        if(length === $scope.lineSize) {
+          _printWinner();
         }
-        if($scope.game.fields[0].player == $scope.game.fields[4].player && $scope.game.fields[4].player  ==  $scope.game.fields[8].player && $scope.game.fields[4].player!= " ") _printWinner();
-        if($scope.game.fields[2].player == $scope.game.fields[4].player && $scope.game.fields[4].player  ==  $scope.game.fields[6].player && $scope.game.fields[4].player!= " ") _printWinner();
-        };
+        else if((start + 1) % $scope.size === 0) return
+        else if($scope.game.fields[start].player === $scope.game.fields[start+1].player
+            && $scope.game.fields[start].player !== ' ') {
+          _checkHorizontal(start + 1, length + 1);
+        }
+        else return
+      };
+
+      var _checkVertical = function _checkVertical(start, length){
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if($scope.game.fields[start].player === $scope.game.fields[start+$scope.size].player
+            && $scope.game.fields[start].player !== ' ') {
+          _checkVertical(start + $scope.size, length + 1);
+        }
+        else return
+      };
+
+      var _checkDiagonal = function _checkDiagonal(start, length){
+        var diagonal = start+$scope.size+1;
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if((start + 1) % $scope.size === 0) return
+        else if($scope.game.fields[start].player === $scope.game.fields[diagonal].player
+            && $scope.game.fields[start].player !== ' ') {
+          _checkDiagonal(diagonal, length + 1);
+        }
+        else return
+      };
+
+      var _checkReverseDiagonal = function _checkReverseDiagonal(start, length){
+        var diagonal = start+$scope.size-1;
+        if(length === $scope.lineSize) {
+          _printWinner();
+        }
+        else if((start + 1) % $scope.size === 1) return
+        else if($scope.game.fields[start].player === $scope.game.fields[diagonal].player
+            && $scope.game.fields[start].player !== ' ') {
+          _checkReverseDiagonal(diagonal, length + 1);
+        }
+        else return
+      };
+
+      var _checkIfWinnerExist = function _checkIfWinnerExist(){
+        for (var i = 0; i < $scope.gridSize; i++) {
+          _checkHorizontal(i, 1);
+        }
+
+        var verticalSize = ($scope.size - $scope.lineSize + 1) * $scope.size;
+
+        for (var i = 0; i < verticalSize; i++) {
+          _checkVertical(i, 1);
+          _checkDiagonal(i, 1);
+          _checkReverseDiagonal(i, 1);
+        }
+      };
+
 
     }]);
 }
