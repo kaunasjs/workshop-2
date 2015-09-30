@@ -1,10 +1,10 @@
-<div class="wrapper" ng-show="!winnerIs">
-    <div ng-repeat="field in fields track by $index" style="width:33%; float:right; cursor:pointer" ng-click="occupieField(field)">
+<div class="wrapper" ng-show="!endMessage">
+    <div ng-repeat="field in fields track by $index" class="title" ng-style="gridStyle" ng-click="occupieField(field)">
       {{field.player}}
     </div>
 </div>
 
-<div ng-show="winnerIs">
-    Winner of this game is player {{winnerIs}}
+<div ng-show="endMessage">
+    {{endMessage}}
     <button ng-click="init()"> Restart </button>
 </div>
